@@ -3,9 +3,14 @@
 <h2>Amigos Conectados</h2>
 <br/>
 <br/>
+<form method="post">
 {%for i in lista%}
-	{% if i in amigos%}
-		<h3><li>{{i}}</li></h3>
-	{%endif%}
+		<h5><li>{{i}} <input type="submit" value="Enviar mensaje" name="chat"></li></h5>
 {%endfor%}
+<br/>
+<h2> Amigos Offline </h2>
+{%for a in lista2%}
+	<h5><li>{{a}} <input type="submit" value="Enviar mensaje" name="chat"> </li></h5>
+{%endfor%}
+</form>
 {%endblock%}

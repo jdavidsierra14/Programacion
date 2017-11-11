@@ -83,6 +83,9 @@ def amigos():
 				error = "Ya has enviado una solicitud al usuario"
 				return render_template("base/inicio.html", usuario = usuario,amigos1 = amigos1,error = error)
 			else:
+				if usuario in agregar:
+					error = "No puedes enviar una solicitud a ti mismo "
+					return render_template("base/inicio.html",usuario = usuario,error = error, amigos1 = amigos1)
 				if agregar in amigos1:
 					error= "Ya has agregado al usuario"
 					return render_template("base/inicio.html",usuario = usuario,error = error, amigos1 = amigos1)
@@ -91,9 +94,8 @@ def amigos():
 					archivo3.close()
 					enviado = "Se ha enviado la solicitud de amistad a " + request.form["agregar"]
 					return render_template("base/inicio.html",usuario = usuario, amigos1 = amigos1,enviado = enviado)
-				if agregar in lectura:
-					error = "No puedes enviarte una solicitud a ti mismo "
-		else:
+
+		else:		
 			if agregar == "":
 				pass
 			if agregar not in baseusuarios:
@@ -112,22 +114,29 @@ def solicitudes():
 	archivo2.close()
 	if request.method == "POST":
 		for i in solicitudes:
-			if request.form.get("boton_"+i,None) == "Aceptar" :
+			if request.form.get("boton_"+i,None) == "Aceptar" : #Si acepta la solicitud
 				elemento = solicitudes.index(i)
 				del solicitudes[elemento]
 				archivo3= open("Contactos/Contactos"+usuario+".txt","a")
-				archivo3.writelines(i)
+				archivo3.writelines(i+"\n")
 				archivo3.close()
 				archivo4= open("Solicitudes/solicitudes"+usuario+".txt","w")
 				archivo5 = open("Contactos/Contactos"+i+".txt","a")
 				archivo5.write(usuario+"\n")
 				archivo5.close()
 				for a in solicitudes:
-					print(solicitudes)
 					archivo4.write(a+"\n")
 				archivo4.close()
-	
-				#return render_template("base/solicitudes.html",solicitudes = solicitudes, msj = msj )		
+			else:
+				if request.form.get("boton_"+i,None) == "Rechazar": #Si rechaza la solicitud
+					elemento = solicitudes.index(i)
+					del solicitudes[elemento]
+					archivo6 = open("Solicitudes/solicitudes"+usuario+".txt","w")
+					for a in solicitudes:
+						archivo6.write(a+"\n")
+					archivo6.close()
+
+		
 	return render_template("base/solicitudes.html",solicitudes = solicitudes, msj = msj )
 
 
@@ -142,15 +151,24 @@ def chats():
 	conectados=archivo2.read().splitlines()
 	archivo2.close()
 	lista= []
+	lista2 = []
 	for i in conectados:
 		for a in amigos:
 			if i == a:
 				lista.append(a)
-	
-	return render_template("base/chats.html",conectados= conectados,amigos=amigos,lista=lista)
+			else:
+				if a not in conectados:
+					lista2.append(a)
+	print(lista)
+	print(lista2)
+	return render_template("base/chats.html",conectados= conectados,lista=lista,lista2=lista2)
 	
 
-
+@app.route("/chatAmigos")
+def chatAmigos():
+	usuario = session["usuario"]
+	archivo2 = open("Contactos/Contactos"+usuario+".txt","r")
+	archivo  = open("Chats/chats"+usuario+"x"+".txt","a")
 
 
 @app.route("/registro", methods=["GET","POST"])
@@ -168,9 +186,9 @@ def registro():
 				archivo = open("usuarios.txt","a")
 				archivo2 = open("contraseñas.txt", "a")
 				verificacion = open("usuarios.txt","r")
-				verificacion2 = verificacion.readlines()
+				verificacion2 = verificacion.readlines() 
 				verificacion.close()
-				if usuarios in verificacion2:
+				if usuarios in verificacion2: #Verifica si el usuario ya existes
 					error = "Usuario ya existe"
 					return render_template("base/cookie.html",error = error, login= True )
 				else:
