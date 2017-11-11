@@ -1,3 +1,9 @@
 body{
-	background-color: #5DB9FF;
+	background: #5DB9FF;
+	
+}
+
+h3{
+  margin-left: auto;
+  margin-right: auto;
 }

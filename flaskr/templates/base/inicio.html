@@ -1,4 +1,22 @@
 {% extends "index.html" %}
-{% block inicio%}
-<h2> Bienvenido Usuario  {{usuario}}</h2>
+{% block contactos%}
+<center>
+<h2> Contactos de {{usuario}}</h2>
+<br/>
+<form  method="post">
+	Agregar amigos:<input type="text" name="agregar"/>
+	<input type="submit"  value="Agregar" name="Agregar ">
+	<input type="button" onclick=" location.href='http://127.0.0.1:1000/solicitudes' " name="solicitudes" value="Solicitudes Amistad">
+</form>
+<h3>{{error}}{{error1}}{{enviado}}</h3>
+<br/>
+<br/>
+{%for i in amigos1%}
+	<h4><li>{{i}}</li></h4>
+{%endfor%}
+<br/>
+<br/>
+<input  type="button" value="Volver" onclick="location.href='http://127.0.0.1:1000/menu'" name="salir">
+
+</center>
 {% endblock %}

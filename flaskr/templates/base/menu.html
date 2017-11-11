@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{%block menu%}
+<center>
+<h2> Bienvenido Usuario {{usuario}}</h2>
+<form method="post">
+<br/>
+<br/>
+<input type="button" onclick="location.href='http://127.0.0.1:1000/amigos'" value=" Amigos " name="amigos">
+<br/>
+<br/>
+<input type="button" onclick="location.href='http://127.0.0.1:1000/chats'" value="  Chats  " name="chats">
+<br/>
+<br/>
+<input type="submit" onclick="location.href='http://127.0.0.1:1000'" value="Salir" name="salir">
+</form>
+<br/>
+<div align="center"> <img src="{{url_for('static', filename='img/logo.png')}}" width="250" height="250"></div>
+</center>
+{%endblock%}

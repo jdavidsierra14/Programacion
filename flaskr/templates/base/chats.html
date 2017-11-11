@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+{%block chats%}
+<h2>Amigos Conectados</h2>
+<br/>
+<br/>
+{%for i in lista%}
+	{% if i in amigos%}
+		<h3><li>{{i}}</li></h3>
+	{%endif%}
+{%endfor%}
+{%endblock%}
