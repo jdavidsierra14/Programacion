@@ -5,12 +5,12 @@
 <br/>
 <form method="post">
 {%for i in lista%}
-		<h5><li>{{i}} <input type="submit" value="Enviar mensaje" name="chat"></li></h5>
+		<h5><li>{{i}} <input type="submit" value="Enviar mensaje" name="boton_{{i}}"></li></h5>
 {%endfor%}
 <br/>
 <h2> Amigos Offline </h2>
 {%for a in lista2%}
-	<h5><li>{{a}} <input type="submit" value="Enviar mensaje" name="chat"> </li></h5>
+	<h5><li>{{a}} <input type="submit" value="Enviar mensaje" name="boton_{{a}}"> </li></h5>
 {%endfor%}
 </form>
 {%endblock%}

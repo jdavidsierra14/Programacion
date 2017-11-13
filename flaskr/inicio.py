@@ -141,7 +141,7 @@ def solicitudes():
 
 
 
-@app.route("/chats")
+@app.route("/chats",methods=["GET","POST"])
 def chats():
 	usuario= session["usuario"]
 	archivo = open("Contactos/Contactos"+usuario+".txt","r")
@@ -152,13 +152,24 @@ def chats():
 	archivo2.close()
 	lista= []
 	lista2 = []
-	for i in conectados:
-		for a in amigos:
-			if i == a:
+	for i in conectados: #Revisa la lista de conectados 
+		for  a in amigos:
+			if i == a: # compara la lista de amigos con los usuarios conectados
 				lista.append(a)
 			else:
 				if a not in conectados:
 					lista2.append(a)
+	if request.method=="POST":
+		for i in lista :
+			print(i)
+			if request.form.get("boton_"+i,None) == "Enviar mensaje":
+				
+				archivo3= open("Chats/Chat-"+usuario+"x"+i+"-.txt","a")
+				archivo3.close()
+		for a in lista2:
+			if request.form.get("boton_"+a,None)== "Enviar mensaje":
+				archivo4 = open("Chats/Chats-"+usuario+"x"+a+"-.txt","a")
+				archivo4.close()
 	print(lista)
 	print(lista2)
 	return render_template("base/chats.html",conectados= conectados,lista=lista,lista2=lista2)
@@ -167,8 +178,7 @@ def chats():
 @app.route("/chatAmigos")
 def chatAmigos():
 	usuario = session["usuario"]
-	archivo2 = open("Contactos/Contactos"+usuario+".txt","r")
-	archivo  = open("Chats/chats"+usuario+"x"+".txt","a")
+	archivo  = open("Chats/chats-"+usuario+"x"+".txt","a")
 
 
 @app.route("/registro", methods=["GET","POST"])

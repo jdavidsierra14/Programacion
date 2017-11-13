@@ -1,3 +1,4 @@
+admin
 juan
 pedro
-ver12
+admin
