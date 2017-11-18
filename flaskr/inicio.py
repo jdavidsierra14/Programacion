@@ -1,4 +1,5 @@
 from flask import Flask , render_template , request, make_response, session, url_for, redirect
+import os
 
 app = Flask(__name__)
 app.secret_key = "Llave_supermisteriosa"
@@ -26,8 +27,13 @@ def inicio():
 			k = baseusuarios.index(usuario)
 			if contrasena == basecontraseña[k]:
 				session["usuario"] = request.form["Usuario"]
+				archivo4 = open("Usuarios Conectados/Usuariosactivos.txt","r")
+				base = archivo4.read().splitlines()
+				archivo4.close()
 				archivo3 = open("Usuarios Conectados/Usuariosactivos.txt","a")
-				archivo3.write(session["usuario"]+"\n")
+				if  session["usuario"] not in base : 
+					archivo3.write(session["usuario"]+"\n")
+				archivo3.close()
 				return redirect(url_for("menu"))
 			else : 
 				error = "Usuario y/o contraseña invalidos" 
@@ -42,20 +48,21 @@ def inicio():
 def menu():
 	usuario = session["usuario"]
 	if request.method == "POST" :
-		if request.form["Salir"] == "salir":
+		if request.form["salir"] == "Salir":
 			archivo = open("Usuarios Conectados/Usuariosactivos.txt","r")
-			usuarios= archivo.read().splitlines()
+			base= archivo.read().splitlines()
 			archivo.close()
-			for i in usuarios:
-				if i == usuarios:
-					elemento = usuarios.index(i)
-					del usuarios[elemento]
+			for i in base:
+				if i == usuario:
+					elemento = base.index(i)
+					del base[elemento]
 					session.pop("usuario",None)
-					archivo2= open("Usuario Contactos/Usuariosactivos.txt","a")
-					for a in usuarios:
+					archivo2= open("Usuarios Conectados/Usuariosactivos.txt","w")
+					print(base)
+					for a in base:
 						archivo2.write(a+"\n")
 					archivo2.close()
-			return render_template("base/menu.html",usuario = usuario)
+			return redirect(url_for("inicio"))
 	return render_template("base/menu.html",usuario = usuario)
 
 
@@ -144,13 +151,13 @@ def solicitudes():
 @app.route("/chats",methods=["GET","POST"])
 def chats():
 	usuario= session["usuario"]
+	creacion = open("Contactos/Contactos"+usuario+".txt","a")
+	creacion.close() 
 	archivo = open("Contactos/Contactos"+usuario+".txt","r")
 	amigos= archivo.read().splitlines()
 	archivo.close()
 	archivo2 = open("Usuarios Conectados/Usuariosactivos.txt","r")
 	conectados=archivo2.read().splitlines()
-	print(conectados)
-	print(amigos)
 	archivo2.close()
 	lista= [] #lista conectados 
 	lista2 = [] #lista no conectados
@@ -163,31 +170,39 @@ def chats():
 					lista2.append(a)
 	if request.method=="POST":
 		for i in lista :
-			print(i)
 			if request.form.get("boton_"+i,None) == "Enviar mensaje":
-				archivo3= open("Chats/Chat-"+usuario+"x"+i+"-.txt","a")
+				archivo3= open("Flask/Chats/Chat-"+usuario+"x"+i+"-.txt","a")
 				session["amigo"] = i
 				archivo3.close()
 
 				return(redirect(url_for("chatAmigos")))
 		for a in lista2:
 			if request.form.get("boton_"+a,None)== "Enviar mensaje":
-				archivo4 = open("Chats/Chats-"+usuario+"x"+a+"-.txt","a")
+				archivo4 = open("F:/Flask/Chats/Chats-"+usuario+"x"+a+"-.txt","a")
+				session["amigo"] = i 
 				archivo4.close()
-
+				return(redirect(url_for("chatAmigos")))
 	return render_template("base/chats.html",conectados= conectados,lista=lista,lista2=lista2)
 
-
-def onClick(self,event):
-	nombre = event.GetEventObject().myname
 
 @app.route("/chatAmigos")
 def chatAmigos():
 	usuario = session["usuario"]
 	amigo = session["amigo"]
-	buscador = amigo.count("pedro")
-	print(buscador)
-	archivo  = open("Chats/chats-"+usuario+"x"+".txt","a")
+	path = "F:\Flask\Chats"
+	archivo = os.listdir(path)
+	for a in archivo:				#Busca en la carpeta de chats
+		buscador= a.count(amigo)	#Busca el archivo de chat que le pertenece 
+		buscador2 = a.count(usuario)
+		print(buscador)
+		print(buscador2)
+		if buscador >= 1 and buscador2 >=1:
+			print("hola")
+			archivo2 = open(a,"r")
+			print(archivo2.readlines())
+			archivo2.close()
+	#buscador = archivo.count("pedro") 
+	#archivo  = open("Chats/chats-"+usuario+"x"+".txt","a")
 	return render_template("base/chatAmigos.html")
 
 @app.route("/registro", methods=["GET","POST"])
