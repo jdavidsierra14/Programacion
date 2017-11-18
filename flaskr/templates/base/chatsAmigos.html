@@ -1,3 +1,12 @@
-{% extends "index.html" %}
-{%block chatsAmigos%}
-{%endblock%}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chat {{usuario}}</title>
+</head>
+<body>
+	{%for a in chat%}
+		<h4>{{a}}</h4>
+	{%endfor%}
+<body style="background-color:#5DB9FF;">
+</body>
+</html>

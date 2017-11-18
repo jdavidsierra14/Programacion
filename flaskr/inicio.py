@@ -171,10 +171,15 @@ def chats():
 	if request.method=="POST":
 		for i in lista :
 			if request.form.get("boton_"+i,None) == "Enviar mensaje":
-				archivo3= open("Flask/Chats/Chat-"+usuario+"x"+i+"-.txt","a")
-				session["amigo"] = i
-				archivo3.close()
-
+				path = "F:\Flask\Chats"
+				base = os.listdir(path)
+				for a in base :
+					buscador= a.count(i)
+					buscador2 = a.count(usuario)
+					if buscador < 1 and buscador2 < 1 :
+						archivo3= open("F:/Flask/Chats/Chat-"+usuario+"x"+i+"-.txt","a")
+						archivo3.close()
+					session["amigo"] = i
 				return(redirect(url_for("chatAmigos")))
 		for a in lista2:
 			if request.form.get("boton_"+a,None)== "Enviar mensaje":
@@ -194,16 +199,17 @@ def chatAmigos():
 	for a in archivo:				#Busca en la carpeta de chats
 		buscador= a.count(amigo)	#Busca el archivo de chat que le pertenece 
 		buscador2 = a.count(usuario)
+		print(a)
 		print(buscador)
 		print(buscador2)
 		if buscador >= 1 and buscador2 >=1:
-			print("hola")
-			archivo2 = open(a,"r")
-			print(archivo2.readlines())
+			print(a)
+			archivo2 = open("F:/Flask/Chats/"+a,"r")
+			chat = archivo2.read().splitlines()
 			archivo2.close()
 	#buscador = archivo.count("pedro") 
 	#archivo  = open("Chats/chats-"+usuario+"x"+".txt","a")
-	return render_template("base/chatAmigos.html")
+	return render_template("base/chatsAmigos.html",chat = chat,usuario = usuario)
 
 @app.route("/registro", methods=["GET","POST"])
 def registro():
