@@ -171,21 +171,28 @@ def chats():
 	if request.method=="POST":
 		for i in lista :
 			if request.form.get("boton_"+i,None) == "Enviar mensaje":
-				path = "F:\Flask\Chats"
+				path = "F:/Flask/flaskr/Chats"
 				base = os.listdir(path)
 				for a in base :
 					buscador= a.count(i)
 					buscador2 = a.count(usuario)
 					if buscador < 1 and buscador2 < 1 :
-						archivo3= open("F:/Flask/Chats/Chat-"+usuario+"x"+i+"-.txt","a")
+						archivo3= open("Chats/Chat-"+usuario+"x"+i+"-.txt","a")
 						archivo3.close()
 					session["amigo"] = i
 				return(redirect(url_for("chatAmigos")))
 		for a in lista2:
 			if request.form.get("boton_"+a,None)== "Enviar mensaje":
-				archivo4 = open("F:/Flask/Chats/Chats-"+usuario+"x"+a+"-.txt","a")
-				session["amigo"] = i 
-				archivo4.close()
+				path = "F:/Flask/flaskr/Chats"
+				base = os.listdir(path)
+				for m in base :
+					buscador= m.count(m)
+					buscador2 = m.count(usuario)
+					if buscador < 1 and buscador2 < 1 :
+						archivo4 = open("Chats/Chats-"+usuario+"x"+m+"-.txt","a")
+						archivo4.close()
+					session["amigo"] = i 
+						
 				return(redirect(url_for("chatAmigos")))
 	return render_template("base/chats.html",conectados= conectados,lista=lista,lista2=lista2)
 
@@ -194,7 +201,7 @@ def chats():
 def chatAmigos():
 	usuario = session["usuario"]
 	amigo = session["amigo"]
-	path = "F:\Flask\Chats"
+	path = "F:/Flask/flaskr/Chats"
 	archivo = os.listdir(path)
 	for a in archivo:				#Busca en la carpeta de chats
 		buscador= a.count(amigo)	#Busca el archivo de chat que le pertenece 
@@ -203,8 +210,7 @@ def chatAmigos():
 		print(buscador)
 		print(buscador2)
 		if buscador >= 1 and buscador2 >=1:
-			print(a)
-			archivo2 = open("F:/Flask/Chats/"+a,"r")
+			archivo2 = open("Chats/"+a,"r")
 			chat = archivo2.read().splitlines()
 			archivo2.close()
 	#buscador = archivo.count("pedro") 
