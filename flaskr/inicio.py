@@ -71,7 +71,7 @@ def menu():
 @app.route("/amigos",methods=["GET","POST"])
 def amigos():
 	usuario= session["usuario"]
-	archivo = open("Contactos/Contactos"+usuario+".txt","a")
+	archivo = open("Contactos/Contactos"+usuario+".txt","a") #Abre o crea el archivo con los contactos del usuario
 	archivo2 = open("Contactos/Contactos"+usuario+".txt", "r")
 	amigos1 = archivo2.read().splitlines()
 	archivo2.close()
@@ -171,51 +171,68 @@ def chats():
 	if request.method=="POST":
 		for i in lista :
 			if request.form.get("boton_"+i,None) == "Enviar mensaje":
-				path = "F:/Flask/flaskr/Chats"
+				ruta = os.path.expanduser('~')
+				path = ruta+"/Desktop/Flask/flaskr/Chats"
 				base = os.listdir(path)
 				for a in base :
 					buscador= a.count(i)
 					buscador2 = a.count(usuario)
+					#print(buscador)
+					#print(buscador2)
 					if buscador < 1 and buscador2 < 1 :
 						archivo3= open("Chats/Chat-"+usuario+"x"+i+"-.txt","a")
 						archivo3.close()
 					session["amigo"] = i
-				return(redirect(url_for("chatAmigos")))
+						
+					return(redirect(url_for("chatAmigos")))
 		for a in lista2:
 			if request.form.get("boton_"+a,None)== "Enviar mensaje":
-				path = "F:/Flask/flaskr/Chats"
+				ruta = os.path.expanduser('~')
+				path = ruta+"/Desktop/Flask/flaskr/Chats"
 				base = os.listdir(path)
 				for m in base :
-					buscador= m.count(m)
+					buscador= m.count(a)
 					buscador2 = m.count(usuario)
-					if buscador < 1 and buscador2 < 1 :
-						archivo4 = open("Chats/Chats-"+usuario+"x"+m+"-.txt","a")
+					print("Este es buscador" + str(buscador))
+					print("Este es buscador2" + str(buscador2))
+					if (buscador==0 or buscador2 == 0) :
+						print("no existe")
+						archivo4 = open("Chats/Chats-"+usuario+"x"+a+"-.txt","a")
 						archivo4.close()
-					session["amigo"] = i 
+					session["amigo"] = a 
 						
-				return(redirect(url_for("chatAmigos")))
+					return(redirect(url_for("chatAmigos")))
 	return render_template("base/chats.html",conectados= conectados,lista=lista,lista2=lista2)
 
 
-@app.route("/chatAmigos")
+@app.route("/chatAmigos",methods=["GET","POST"])
 def chatAmigos():
 	usuario = session["usuario"]
 	amigo = session["amigo"]
-	path = "F:/Flask/flaskr/Chats"
+	ruta = os.path.expanduser('~')
+	path = ruta+"/Desktop/Flask/flaskr/Chats"
 	archivo = os.listdir(path)
-	for a in archivo:				#Busca en la carpeta de chats
+	for a in archivo:		#Busca en la carpeta de chats
 		buscador= a.count(amigo)	#Busca el archivo de chat que le pertenece 
 		buscador2 = a.count(usuario)
-		print(a)
-		print(buscador)
-		print(buscador2)
 		if buscador >= 1 and buscador2 >=1:
 			archivo2 = open("Chats/"+a,"r")
 			chat = archivo2.read().splitlines()
 			archivo2.close()
+			if request.method == "POST":
+				if request.form["enviar"] == "Enviar Mensaje" :
+					msj = request.form["Mensajes"]
+					if msj != "":
+						archivo3 = open("Chats/"+a,"a")
+						archivo3.write(usuario+":"+""+ msj+"\n")
+						archivo3.close()
+						archivo4 = open("Chats/"+a,"r")
+						chat = archivo4.read().splitlines()
+						archivo4.close()
+				
 	#buscador = archivo.count("pedro") 
 	#archivo  = open("Chats/chats-"+usuario+"x"+".txt","a")
-	return render_template("base/chatsAmigos.html",chat = chat,usuario = usuario)
+	return render_template("base/chatsAmigos.html",usuario = usuario,chat = chat)
 
 @app.route("/registro", methods=["GET","POST"])
 def registro():
