@@ -1,15 +1,21 @@
-{% extends "index.html" %}
-{%block solicitudes%}
-<div style="text-align: center;">
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Solicitudes</title>
+	<link rel="stylesheet" type="text/css" href='static/solicitudes.css'>
+</head>
+<body>
+<div>
 	<h2>{{msj}}</h2>
-	<br/>
 		<form method="post">
 			{%for i in solicitudes %}
-			<h3 style="font-size: 120%"><li> {{i}} <input type="submit" value="Aceptar" name="boton_{{i}}"> <input type="submit" value="Rechazar" name="boton_{{i}}"></li></h3>
+			<h3><li> {{i}} <input type="submit" value="Aceptar" name="boton_{{i}}"> <input type="submit" value="Rechazar" name="boton_{{i}}"></li></h3>
 			{%endfor%}
 		</form>
 	<br/>
 	<br/>
 	<input type="button" value="Volver" onclick="location.href='http://127.0.0.1:1000/amigos'" name="salir">
 </div>
-{%endblock%}
+</body>
+</html>

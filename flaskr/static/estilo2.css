@@ -5,7 +5,7 @@ body{
 
 h3{
 	text-align: center;
-	font-size: 200%
+	font-size: 200%;
   
 }
 div {
@@ -15,7 +15,7 @@ border-radius: 24px 24px 24px 24px;
 -webkit-border-radius: 24px 24px 24px 24px;
 border: 10px solid #000000; position:relative; 
 text-align: center; background-color: #F1C40F ; 
-width: 500px; height: 500px; margin: auto; 
+width: 600px; height: 500px; margin: auto; 
 overflow-y: auto;
 }
 h5{
@@ -24,7 +24,7 @@ h5{
 	border-radius: 58px 58px 58px 58px;
 -moz-border-radius: 58px 58px 58px 58px;
 -webkit-border-radius: 58px 58px 58px 58px;
-border: 0px solid #000000; background-color: #F0F3F4   ; margin: 30px; font-size: 120%
+border: 0px solid #000000; background-color: #F0F3F4   ; margin: 30px; font-size: 150%;
 }
 
 .boton_salir{

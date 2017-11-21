@@ -1,6 +1,7 @@
 from flask import Flask , render_template , request, make_response, session, url_for, redirect
 import os
 import time
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = "Llave_supermisteriosa"
@@ -8,7 +9,7 @@ app.secret_key = "Llave_supermisteriosa"
 def inicio():
 	e= "Bienvenido a ChaTeo-Web"
 	if request.method=="POST":
-		usuario = request.form["Usuario"]
+		usuario = request.form["Usuario"] #formulario de iniciar sesion 
 		contrasena = request.form["contrasena"]
 		
 		usuario = usuario + "\n"
@@ -24,14 +25,14 @@ def inicio():
 		archivo2.close()
 		
 		 
-		if usuario in baseusuarios:
-			k = baseusuarios.index(usuario)
+		if usuario in baseusuarios:  #Busca que el usuario ingresado exista en archivo donde van todos los usuarios
+			k = baseusuarios.index(usuario)  #El resulatado es la posicion donde se encuentra la constraseña del usuario digitado 
 			if contrasena == basecontraseña[k]:
-				session["usuario"] = request.form["Usuario"]
+				session["usuario"] = request.form["Usuario"] #Si la constraseña coinciden se crea una sesion del usuario 
+				archivo3 = open("Usuarios Conectados/Usuariosactivos.txt","a")
 				archivo4 = open("Usuarios Conectados/Usuariosactivos.txt","r")
 				base = archivo4.read().splitlines()
 				archivo4.close()
-				archivo3 = open("Usuarios Conectados/Usuariosactivos.txt","a")
 				if  session["usuario"] not in base : 
 					archivo3.write(session["usuario"]+"\n")
 				archivo3.close()
@@ -49,14 +50,14 @@ def inicio():
 def menu():
 	usuario = session["usuario"]
 	if request.method == "POST" :
-		if request.form["salir"] == "  Salir  ":
+		if request.form["salir"] == "  Salir  ": #Si selecciona el boton de salir, la sesion del usuario se elimina
 			archivo = open("Usuarios Conectados/Usuariosactivos.txt","r")
 			base= archivo.read().splitlines()
 			archivo.close()
 			for i in base:
 				if i == usuario:
 					elemento = base.index(i)
-					del base[elemento]
+					del base[elemento]     #Elimina el usuario del archivo usuario activos
 					session.pop("usuario",None)
 					archivo2= open("Usuarios Conectados/Usuariosactivos.txt","w")
 					print(base)
@@ -78,16 +79,16 @@ def amigos():
 	archivo2.close()
 	archivo.close()
 	if request.method =="POST":
-		agregar = request.form["agregar"]
+		agregar = request.form["agregar"]  #formulario para agregar amigos 
 		archivo= open("usuarios.txt", "r")
-		baseusuarios = archivo.read().splitlines()
+		baseusuarios = archivo.read().splitlines() 
 		archivo.close()
-		if agregar in baseusuarios and agregar != "":
-			archivo3 = open("Solicitudes/solicitudes"+request.form["agregar"]+".txt","a")
+		if agregar in baseusuarios and agregar != "": #Busca que el usuario que digito exista en archivo donde estan todos los usuarios del programa
+			archivo3 = open("Solicitudes/solicitudes"+request.form["agregar"]+".txt","a")  #abre el archivo de solicitudes de quien se le va a agregar
 			archivo4 = open("Solicitudes/solicitudes"+request.form["agregar"]+".txt","r")
 			lectura = archivo4.read().splitlines() 
 			archivo4.close()
-			if usuario in lectura:
+			if usuario in lectura: #Verifica que no le se envie dos veces una solicitud sin responder
 				error = "Ya has enviado una solicitud al usuario"
 				return render_template("base/inicio.html", usuario = usuario,amigos1 = amigos1,error = error)
 			else:
@@ -124,9 +125,9 @@ def solicitudes():
 		for i in solicitudes:
 			if request.form.get("boton_"+i,None) == "Aceptar" : #Si acepta la solicitud
 				elemento = solicitudes.index(i)
-				del solicitudes[elemento]
+				del solicitudes[elemento] #Elimina la solicitud
 				archivo3= open("Contactos/Contactos"+usuario+".txt","a")
-				archivo3.writelines(i+"\n")
+				archivo3.writelines(i+"\n") #Si acepta la solicitud agrega al usuario
 				archivo3.close()
 				archivo4= open("Solicitudes/solicitudes"+usuario+".txt","w")
 				archivo5 = open("Contactos/Contactos"+i+".txt","a")
@@ -173,17 +174,15 @@ def chats():
 		for i in lista :
 			if request.form.get("boton_"+i,None) == "Enviar mensaje":
 				ruta = os.path.expanduser('~')
-				path = ruta+"/Desktop/Flask/flaskr/Chats"
+				path = ruta+"/Desktop/Flask/flaskr/Chats" #Busca los archivos de la carpeta chats
 				base = os.listdir(path)
-				for a in base :
-					buscador= a.count(i)
+				for a in base :  #empieza a recorrer todos los archivos de la ruta seleccionada
+					buscador= a.count(i)	#empieza a buscar cuantas veces se encuentra el concato 
 					buscador2 = a.count(usuario)
-					#print(buscador)
-					#print(buscador2)
-					if buscador < 1 and buscador2 < 1 :
-						archivo3= open("Chats/Chat-"+usuario+"x"+i+"-.txt","a")
+					if buscador < 1 and buscador2 < 1 :  #si no encuentra un archivo donde no se encuentren los dos 
+						archivo3= open("Chats/Chat-"+usuario+"x"+i+"-.txt","a") #Va a crear un solo archivo para el chat de esos dos usuarios
 						archivo3.close()
-					session["amigo"] = i
+					session["amigo"] = i #se crea la sesion de ese usuario para el chat
 						
 					return(redirect(url_for("chatAmigos")))
 		for a in lista2:
@@ -192,11 +191,8 @@ def chats():
 				path = ruta+"/Desktop/Flask/flaskr/Chats"
 				base = os.listdir(path)
 				for m in base :
-					print("hola")
 					buscador= m.count(a)
 					buscador2 = m.count(usuario)
-					print("Este es buscador" + str(buscador))
-					print("Este es buscador2" + str(buscador2))
 					if (buscador==0 or buscador2 == 0) :
 						print("no existe")
 						archivo4 = open("Chats/Chats-"+usuario+"x"+a+"-.txt","a")
@@ -222,16 +218,16 @@ def chatAmigos():
 			chat = archivo2.read().splitlines()
 			archivo2.close()
 			if request.method == "POST":
-				if request.form["imagen"] == "Enviar imagen":
-					f = request.files["file"] 
-					f.save(ruta+"/Desktop/Flask/flaskr/static/upload")
+				#if request.form["imagen"] == "Enviar imagen":
+					#f = request.files["file"] 
+					#f.save(secure_filename(ruta+"/Desktop/Flask/flaskr/static/upload"))
 				if request.form["enviar"] == "Enviar Mensaje" :
-					msj = request.form["Mensajes"]
+					msj = request.form["Mensajes"] #envio de mensajes
 					if msj != "":
 						archivo3 = open("Chats/"+a,"a")
 						archivo3.write(time.strftime("%b,%d ,%H:%M")+"  "+ usuario +":"+"  "+ msj+"\n")
 						archivo3.close()
-						archivo4 = open("Chats/"+a,"r")
+						archivo4 = open("Chats/"+a,"r") # "a" es el archivo que se encontro mas arriba en el codigo con el for
 						chat = archivo4.read().splitlines()
 						archivo4.close() 
 						
@@ -240,7 +236,7 @@ def chatAmigos():
 @app.route("/registro", methods=["GET","POST"])
 def registro():
 	if request.method=="POST":
-		if request.form["Usuario"] == "" or request.form["contrasena"] == "":
+		if request.form["Usuario"] == "" or request.form["contrasena"] == "": #Verifica que los campos del registro no sean vacios
 			error1="Ingrese datos validos"
 			return render_template("base/cookie.html",error1 = error1,login=True)
 		else:
@@ -259,7 +255,7 @@ def registro():
 					return render_template("base/cookie.html",error = error, login= True )
 				else:
 					archivo.write(usuarios) #Registra el usuario
-					archivo2.write(contrasena)
+					archivo2.write(contrasena) #Registra su contraseña 
 					aceptado = "Usuario registrado excitosamente"
 					archivo.close()	
 					archivo2.close()
