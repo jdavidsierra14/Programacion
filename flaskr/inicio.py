@@ -209,7 +209,9 @@ def chatAmigos():
 	ahora= time.strftime("%c")
 	ruta = os.path.expanduser('~')
 	path = ruta+"/Desktop/Flask/flaskr/Chats"
+	imagenes = ruta+"/Desktop/Flask/flaskr/static/upload"
 	archivo = os.listdir(path)
+	app.config["imagenes"] = imagenes
 	for a in archivo:		#Busca en la carpeta de chats
 		buscador= a.count(amigo)	#Busca el archivo de chat que le pertenece 
 		buscador2 = a.count(usuario)
@@ -218,9 +220,6 @@ def chatAmigos():
 			chat = archivo2.read().splitlines()
 			archivo2.close()
 			if request.method == "POST":
-				#if request.form["imagen"] == "Enviar imagen":
-					#f = request.files["file"] 
-					#f.save(secure_filename(ruta+"/Desktop/Flask/flaskr/static/upload"))
 				if request.form["enviar"] == "Enviar Mensaje" :
 					msj = request.form["Mensajes"] #envio de mensajes
 					if msj != "":
@@ -229,8 +228,14 @@ def chatAmigos():
 						archivo3.close()
 						archivo4 = open("Chats/"+a,"r") # "a" es el archivo que se encontro mas arriba en el codigo con el for
 						chat = archivo4.read().splitlines()
-						archivo4.close() 
-						
+						archivo4.close()
+				#for file in request.files.getlist("file") :
+					#print(file)
+					#filename = secure_filename(file.filename)
+					#destination = "/".join([imagenes, filename])
+					#file.save(destination)
+					#archivoimagen = str(destination)
+					#imagen = archivoimagen[archivoimagen.find("\static"):len(archivoimagen)]
 	return render_template("base/chatsAmigos.html",usuario = usuario,chat = chat,amigo = amigo)
 
 @app.route("/registro", methods=["GET","POST"])
