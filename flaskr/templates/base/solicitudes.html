@@ -1,15 +1,15 @@
 {% extends "index.html" %}
 {%block solicitudes%}
-<center>
-<h2>{{msj}}</h2>
-<br/>
-	<form method="post">
-		{%for i in solicitudes %}
-		<li>{{i}} <input type="submit" value="Aceptar" name="boton_{{i}}"> <input type="submit" value="Rechazar" name="boton_{{i}}"></li>
-		{%endfor%}
-	</form>
-<br/>
-<br/>
-<input type="button" value="Volver" onclick="location.href='http://127.0.0.1:1000/amigos'" name="salir">
-</center>
+<div style="text-align: center;">
+	<h2>{{msj}}</h2>
+	<br/>
+		<form method="post">
+			{%for i in solicitudes %}
+			<h3 style="font-size: 120%"><li> {{i}} <input type="submit" value="Aceptar" name="boton_{{i}}"> <input type="submit" value="Rechazar" name="boton_{{i}}"></li></h3>
+			{%endfor%}
+		</form>
+	<br/>
+	<br/>
+	<input type="button" value="Volver" onclick="location.href='http://127.0.0.1:1000/amigos'" name="salir">
+</div>
 {%endblock%}

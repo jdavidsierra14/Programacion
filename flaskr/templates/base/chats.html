@@ -1,18 +1,36 @@
-{% extends "index.html" %}
-{%block chats%}
-<h2>Amigos Conectados</h2>
-<br/>
-<br/>
-<form method="post">
-{%for i in lista%}
-		<h5><li>{{i}} <input type="submit" value="Enviar mensaje" name="boton_{{i}}"></li></h5>
-{%endfor%}
-<br/>
-<h2> Amigos Offline </h2>
-{%for a in lista2%}
-	<h5><li>{{a}} <input type="submit" value="Enviar mensaje" name="boton_{{a}}"> </li></h5>
-{%endfor%}
-</form>
-<br/>
-<input type="button" value="Volver" onclick="location.href='http://127.0.0.1:1000/menu'" name="salir">
-{%endblock%}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Contactos {{usuario}}</title>
+	<link rel="stylesheet" type="text/css" href='static/estilo2.css'>
+
+</head>
+<body>
+<h3 >Tus amigos te esperan {{usuario}}</h3>
+<div>
+	<br/>
+	<br/>
+	<h2>Amigos Conectados</h2>
+	<br/>
+	<br/>
+	<form method="post">
+	{%for i in lista%}
+			<h5 ><li>{{i}} <input type="submit" style="position: relative;left: 30px" value="Enviar mensaje" name="boton_{{i}}"></li></h5>
+	{%endfor%}
+	<br/>
+	<h2> Amigos Offline </h2>
+	<br/>
+	<br/>
+	{%for a in lista2%}
+		<h5 style="font-size: 120%"><li>{{a}} <input type="submit" style="position: relative;left: 30px" value="Enviar mensaje" name="boton_{{a}}"> </li></h5>
+	{%endfor%}
+	</form>
+	<br/>
+	
+</div>
+<input class="boton_salir" type="button" value="Volver" onclick="location.href='http://127.0.0.1:1000/menu'" name="salir">
+</body>
+</html>
+

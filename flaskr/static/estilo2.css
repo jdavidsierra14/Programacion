@@ -4,6 +4,35 @@ body{
 }
 
 h3{
-  margin-left: auto;
-  margin-right: auto;
+	text-align: center;
+	font-size: 200%
+  
+}
+div {
+
+border-radius: 24px 24px 24px 24px;
+-moz-border-radius: 24px 24px 24px 24px;
+-webkit-border-radius: 24px 24px 24px 24px;
+border: 10px solid #000000; position:relative; 
+text-align: center; background-color: #F1C40F ; 
+width: 500px; height: 500px; margin: auto; 
+overflow-y: auto;
+}
+h5{
+	position: relative;
+	top: -70px;
+	border-radius: 58px 58px 58px 58px;
+-moz-border-radius: 58px 58px 58px 58px;
+-webkit-border-radius: 58px 58px 58px 58px;
+border: 0px solid #000000; background-color: #F0F3F4   ; margin: 30px; font-size: 120%
+}
+
+.boton_salir{
+	position: relative;
+	height: 30px;
+	width: 50px;
+	bottom: 500px;
+
+
+
 }

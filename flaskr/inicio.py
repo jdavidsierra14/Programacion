@@ -1,5 +1,6 @@
 from flask import Flask , render_template , request, make_response, session, url_for, redirect
 import os
+import time
 
 app = Flask(__name__)
 app.secret_key = "Llave_supermisteriosa"
@@ -48,7 +49,7 @@ def inicio():
 def menu():
 	usuario = session["usuario"]
 	if request.method == "POST" :
-		if request.form["salir"] == "Salir":
+		if request.form["salir"] == "  Salir  ":
 			archivo = open("Usuarios Conectados/Usuariosactivos.txt","r")
 			base= archivo.read().splitlines()
 			archivo.close()
@@ -191,6 +192,7 @@ def chats():
 				path = ruta+"/Desktop/Flask/flaskr/Chats"
 				base = os.listdir(path)
 				for m in base :
+					print("hola")
 					buscador= m.count(a)
 					buscador2 = m.count(usuario)
 					print("Este es buscador" + str(buscador))
@@ -200,39 +202,40 @@ def chats():
 						archivo4 = open("Chats/Chats-"+usuario+"x"+a+"-.txt","a")
 						archivo4.close()
 					session["amigo"] = a 
-						
 					return(redirect(url_for("chatAmigos")))
-	return render_template("base/chats.html",conectados= conectados,lista=lista,lista2=lista2)
+	return render_template("base/chats.html", usuario = usuario,conectados= conectados,lista=lista,lista2=lista2)
 
 
 @app.route("/chatAmigos",methods=["GET","POST"])
 def chatAmigos():
 	usuario = session["usuario"]
 	amigo = session["amigo"]
+	ahora= time.strftime("%c")
 	ruta = os.path.expanduser('~')
 	path = ruta+"/Desktop/Flask/flaskr/Chats"
 	archivo = os.listdir(path)
 	for a in archivo:		#Busca en la carpeta de chats
 		buscador= a.count(amigo)	#Busca el archivo de chat que le pertenece 
 		buscador2 = a.count(usuario)
-		if buscador >= 1 and buscador2 >=1:
+		if buscador >= 1 and buscador2 >=1: # si el nombre del usuario y del contacto es mayor es 1 en los dos es porque ese es el archivo que le pertenece
 			archivo2 = open("Chats/"+a,"r")
 			chat = archivo2.read().splitlines()
 			archivo2.close()
 			if request.method == "POST":
+				if request.form["imagen"] == "Enviar imagen":
+					f = request.files["file"] 
+					f.save(ruta+"/Desktop/Flask/flaskr/static/upload")
 				if request.form["enviar"] == "Enviar Mensaje" :
 					msj = request.form["Mensajes"]
 					if msj != "":
 						archivo3 = open("Chats/"+a,"a")
-						archivo3.write(usuario+":"+""+ msj+"\n")
+						archivo3.write(time.strftime("%b,%d ,%H:%M")+"  "+ usuario +":"+"  "+ msj+"\n")
 						archivo3.close()
 						archivo4 = open("Chats/"+a,"r")
 						chat = archivo4.read().splitlines()
-						archivo4.close()
-				
-	#buscador = archivo.count("pedro") 
-	#archivo  = open("Chats/chats-"+usuario+"x"+".txt","a")
-	return render_template("base/chatsAmigos.html",usuario = usuario,chat = chat)
+						archivo4.close() 
+						
+	return render_template("base/chatsAmigos.html",usuario = usuario,chat = chat,amigo = amigo)
 
 @app.route("/registro", methods=["GET","POST"])
 def registro():

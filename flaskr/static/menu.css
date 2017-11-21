@@ -1,0 +1,22 @@
+body{
+	background: #5DB9FF;
+	
+}
+
+.menu{
+border-radius: 21px 21px 21px 21px;
+-moz-border-radius: 21px 21px 21px 21px;
+-webkit-border-radius: 21px 21px 21px 21px;
+border: 15px solid #000000;
+	text-align: center;
+}
+
+h2{
+	font-size: 250%;
+}
+
+input{
+	font-size: 150%;
+	margin: auto;
+	width: 140px;
+}
