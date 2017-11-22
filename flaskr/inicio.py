@@ -195,29 +195,39 @@ def chats():
 				ruta = os.path.expanduser('~')
 				path = ruta+"/Desktop/Flask/flaskr/Chats" #Busca los archivos de la carpeta chats
 				base = os.listdir(path)
+				contador = 0 
 				for a in base :  #empieza a recorrer todos los archivos de la ruta seleccionada
 					buscador= a.count(i)	#empieza a buscar cuantas veces se encuentra el concato 
 					buscador2 = a.count(usuario)
-					if buscador < 1 and buscador2 < 1 :  #si no encuentra un archivo donde no se encuentren los dos 
-						archivo3= open("Chats/Chat-"+usuario+"x"+i+"-.txt","a") #Va a crear un solo archivo para el chat de esos dos usuarios
-						archivo3.close()
-					session["amigo"] = i #se crea la sesion de ese usuario para el chat
-						
-					return(redirect(url_for("chatAmigos")))
+					if buscador == 1 and buscador2 ==1:  #si no encuentra un archivo donde no se encuentren los dos 
+						contador +=1
+				if contador == 0: 
+					archivo3= open("Chats/Chat-"+usuario+"x"+i+"-.txt","a") #Va a crear un solo archivo para el chat de esos dos usuarios
+					archivo3.close()
+					verificacion = os.path.isdir(ruta+"/Desktop/Flask/flaskr/static/upload/Chat"+usuario+"-"+i)
+					if verificacion == False:
+						os.mkdir(ruta+"/Desktop/Flask/flaskr/static/upload/Chat"+usuario+"-"+i)	
+				session["amigo"] = i #se crea la sesion de ese usuario para el chat	
+				return(redirect(url_for("chatAmigos")))
 		for a in lista2:
 			if request.form.get("boton_"+a,None)== "Enviar mensaje":
 				ruta = os.path.expanduser('~')
 				path = ruta+"/Desktop/Flask/flaskr/Chats"
 				base = os.listdir(path)
+				contador = 0
 				for m in base :
 					buscador= m.count(a)
 					buscador2 = m.count(usuario)
-					if (buscador==0 or buscador2 == 0) :
-						print("no existe")
-						archivo4 = open("Chats/Chats-"+usuario+"x"+a+"-.txt","a")
-						archivo4.close()
-					session["amigo"] = a 
-					return(redirect(url_for("chatAmigos")))
+					if buscador == 1 and buscador2 ==1:  #si no encuentra un archivo donde no se encuentren los dos 
+						contador +=1
+				if contador == 0: 
+					archivo3= open("Chats/Chat-"+usuario+"x"+a+"-.txt","a") #Va a crear un solo archivo para el chat de esos dos usuarios
+					archivo3.close()
+					verificacion = os.path.isdir(ruta+"/Desktop/Flask/flaskr/static/upload/Chat"+usuario+"-"+a)
+					if verificacion == False:
+						os.mkdir(ruta+"/Desktop/Flask/flaskr/static/upload/Chat"+usuario+"-"+a)	
+				session["amigo"] = a #se crea la sesion de ese usuario para el chat	
+				return(redirect(url_for("chatAmigos")))
 	return render_template("base/chats.html", usuario = usuario,conectados= conectados,lista=lista,lista2=lista2)
 
 
@@ -234,7 +244,6 @@ def chatAmigos():
 	path = ruta+"/Desktop/Flask/flaskr/Chats"
 	imagenes = ruta+"/Desktop/Flask/flaskr/static/upload"
 	archivo = os.listdir(path)
-	app.config["imagenes"] = imagenes
 	for a in archivo:		#Busca en la carpeta de chats
 		buscador= a.count(amigo)	#Busca el archivo de chat que le pertenece 
 		buscador2 = a.count(usuario)
@@ -244,28 +253,61 @@ def chatAmigos():
 			archivo2.close()
 			if request.method == "POST":
 				if request.form["enviar"] == "Enviar Mensaje" :
-					msj = request.form["Mensajes"] #envio de mensajes
-					if msj != "":
-						archivo3 = open("Chats/"+a,"a")
-						archivo3.write(time.strftime("%b,%d ,%H:%M")+"  "+ usuario +":"+"  "+ msj+"\n")
-						archivo3.close()
-						archivo4 = open("Chats/"+a,"r") # "a" es el archivo que se encontro mas arriba en el codigo con el for
-						chat = archivo4.read().splitlines()
-						archivo4.close()
-				if request.files.getlist("file") != "":
-					print(request.files.getlist("file"))		
-					for file in request.files.getlist("file") :
-						print(file)
-						filename = secure_filename(file.filename)
-						destination = "/".join([imagenes, filename])
-						file.save(destination)
-						archivoimagen = str(destination)
-						imagen = archivoimagen[archivoimagen.find("\static"):len(archivoimagen)]
-						print(archivoimagen)
+						msj = request.form["Mensajes"] #envio de mensajes
+						if msj != "":
+							archivo3 = open("Chats/"+a,"a")
+							archivo3.write(time.strftime("%b,%d ,%H:%M")+"  "+ usuario +":"+"  "+ msj+"\n")
+							archivo3.close()
+							archivo4 = open("Chats/"+a,"r") # "a" es el archivo que se encontro mas arriba en el codigo con el for
+							chat = archivo4.read().splitlines()
+							archivo4.close()
 	return render_template("base/chatsAmigos.html",usuario = usuario,chat = chat,amigo = amigo)
+@app.route("/imagenes",methods=["GET","POST"])
+def imagenes():
+	usuario = session["usuario"]
+	amigo = session["amigo"]
+	ruta = os.path.expanduser('~')
+	imagenes = ruta+"/Desktop/Flask/flaskr/static/upload"
+	imagenes2 = os.listdir(imagenes)
+	for img in imagenes2:
+		busqueda = img.count(amigo)
+		busqueda2 = img.count(usuario)
+		if busqueda >=1 and busqueda2 >=1:
+			imagenes3 = ruta+"/Desktop/Flask/flaskr/static/upload/"+img
+	app.config["imagenes3"] = imagenes3	
+	if request.method == "POST":
+		if request.form["imagen"] == "Enviar Imagen" :
+			if 'file' not in request.files:
+				return redirect(request.url)
+			if request.files["file"] == "":
+				return redirect(request.url)
+			file = request.files['file']
+
+			if file.filename == "":
+				redirect(request.url)
+
+			filename = secure_filename(file.filename)
+			destination = "/".join([imagenes3, filename])
+			file.save(destination)
+			ruta = os.path.expanduser('~')
+			path = ruta+"/Desktop/Flask/flaskr/Chats"
+			archivo = os.listdir(path)
+			for a in archivo:		#Busca en la carpeta de chats
+				buscador= a.count(amigo)	#Busca el archivo de chat que le pertenece 
+				buscador2 = a.count(usuario)
+				if buscador >= 1 and buscador2 >=1: # si el nombre del usuario y del contacto es mayor es 1 en los dos es porque ese es el archivo que le pertenece
+					archivo2 = open("Chats/"+a,"a")
+					chat = archivo2.write(time.strftime("%b,%d ,%H:%M")+"  "+ usuario +":"+"  "+ destination+"\n")
+					archivo2.close()
+			return redirect(url_for("chatAmigos"))
+	return render_template("base/imagenes.html")
 
 @app.route("/registro", methods=["GET","POST"])
 def registro():
+	"""
+	Funcion donde puede registrarse el usuario. Una vez registrado, su nombre usuario pasa a un archivo donde se encuentran
+	todos los usuarios que esten registrados
+	"""
 	if request.method=="POST":
 		if request.form["Usuario"] == "" or request.form["contrasena"] == "": #Verifica que los campos del registro no sean vacios
 			error1="Ingrese datos validos"

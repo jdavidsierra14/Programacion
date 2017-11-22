@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body style="background-color: #5DB9FF; text-align: center;">
+<form method="post" action="{{ url_for('imagenes')}}" enctype="multipart/form-data">
+<input type="file" style="height: 30px; vertical-align: middle;"  name="file" accept="image/*">
+<input type="submit"   name="imagen" value="Enviar Imagen">
+</form>
+</body>
+</html>

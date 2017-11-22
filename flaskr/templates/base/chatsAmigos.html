@@ -12,20 +12,19 @@
 				<div class="segundo">
 					<p>
 					{%for a in chat%}
-						<h4><li>{{a}}</li></h4>
+						<h4><li>{{a|safe}}</li></h4>
 					{%endfor%}
 					</p>
 				</div>
 			</div>
 			<div class="abajo">
-				<form  method="post" action="{{ url_for('chatAmigos')}}" enctype="multipart/form-data">
+				<form  method="post" name="mensajes" action="{{ url_for('chatAmigos')}}" enctype="multipart/form-data">
 					<input type="text"  style="overflow: auto; height:30px;width: 450px; vertical-align: middle; " name="Mensajes"> 
 					<input type="submit" style="height: 30px; vertical-align: middle; " value="Enviar Mensaje" name="enviar">
 					<input type="button" value="Actualizar" style="height: 30px; vertical-align: middle; " onclick=" location.href= 'http://127.0.0.1:1000/chatAmigos'" name="actualizar">
+					<input type="button" value="Enviar imagen"  onclick=" location.href='http://127.0.0.1:1000/imagenes' " name="imagen">
 					<br/>
 					<br/>
-					<input type="file" style="height: 30px; vertical-align: middle;"  name="file" accept="image/*">
-					<input type="submit" style="height: 30px; vertical-align: middle;" value="Enviar imagen" name="imagen">
 				</form>
 									
 				<div class="volver">
