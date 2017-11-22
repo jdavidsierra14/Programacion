@@ -7,6 +7,10 @@ app = Flask(__name__)
 app.secret_key = "Llave_supermisteriosa"
 @app.route("/", methods=["GET","POST"])
 def inicio():
+	"""
+	Esta funcion es la de la pagina del inicio, donde el usuario ingresa sesion
+	Se compone de dos formularios y dos botones, uno para iniciar sesion y otro para registrarse
+	"""
 	e= "Bienvenido a ChaTeo-Web"
 	if request.method=="POST":
 		usuario = request.form["Usuario"] #formulario de iniciar sesion 
@@ -48,6 +52,10 @@ def inicio():
 
 @app.route("/menu",methods=["GET","POST"])
 def menu():
+	"""
+	Funcion donde se encuentra el menu donde el usuario escoge la opcion que desee.
+	Lo que se encuentra aqui es cuando el usurio cierra sesion, elminando asi su nombre en el archivo de usuarios activos
+	"""
 	usuario = session["usuario"]
 	if request.method == "POST" :
 		if request.form["salir"] == "  Salir  ": #Si selecciona el boton de salir, la sesion del usuario se elimina
@@ -72,6 +80,10 @@ def menu():
 
 @app.route("/amigos",methods=["GET","POST"])
 def amigos():
+	"""
+	Funcion donde te permite agregar los usuarios, en la funcion se abre el archivo del usuario que este en sesion y ademas cuando 
+	envia una solicitud, su nombre aparecera en el archivo de solicitudes de quien desa agregar
+	"""
 	usuario= session["usuario"]
 	archivo = open("Contactos/Contactos"+usuario+".txt","a") #Abre o crea el archivo con los contactos del usuario
 	archivo2 = open("Contactos/Contactos"+usuario+".txt", "r")
@@ -114,6 +126,9 @@ def amigos():
 
 @app.route("/solicitudes", methods=["GET","POST"])
 def solicitudes():
+	"""
+	Aqui apareceran las solicitudes que el usuario tenga pendiente
+	"""
 	usuario = session["usuario"]
 	msj = "Solicitudes de "+usuario
 	archivo2 = open("Solicitudes/solicitudes"+usuario+".txt","a")
@@ -152,6 +167,10 @@ def solicitudes():
 
 @app.route("/chats",methods=["GET","POST"])
 def chats():
+	"""
+	El menu donde apareceran los amigos conectado o desconectados, una vez que el usuario desee enviarle un mensaje a un
+	contacto, si el archivo no esta creado, lo crea. Si el archivo ya existe no vuelve a crear otro archivo con ese chat.	 
+	"""
 	usuario= session["usuario"]
 	creacion = open("Contactos/Contactos"+usuario+".txt","a")
 	creacion.close() 
@@ -204,6 +223,10 @@ def chats():
 
 @app.route("/chatAmigos",methods=["GET","POST"])
 def chatAmigos():
+	"""
+	Pagina donde se encuentra el chat. Se selecciona el archivo que le pertenece al usuario en sesion y de su contacto
+	Cada mensaje se va modificando el archivo de chat del respectivo usuario con su contacto
+	"""
 	usuario = session["usuario"]
 	amigo = session["amigo"]
 	ahora= time.strftime("%c")
@@ -229,13 +252,16 @@ def chatAmigos():
 						archivo4 = open("Chats/"+a,"r") # "a" es el archivo que se encontro mas arriba en el codigo con el for
 						chat = archivo4.read().splitlines()
 						archivo4.close()
-				#for file in request.files.getlist("file") :
-					#print(file)
-					#filename = secure_filename(file.filename)
-					#destination = "/".join([imagenes, filename])
-					#file.save(destination)
-					#archivoimagen = str(destination)
-					#imagen = archivoimagen[archivoimagen.find("\static"):len(archivoimagen)]
+				if request.files.getlist("file") != "":
+					print(request.files.getlist("file"))		
+					for file in request.files.getlist("file") :
+						print(file)
+						filename = secure_filename(file.filename)
+						destination = "/".join([imagenes, filename])
+						file.save(destination)
+						archivoimagen = str(destination)
+						imagen = archivoimagen[archivoimagen.find("\static"):len(archivoimagen)]
+						print(archivoimagen)
 	return render_template("base/chatsAmigos.html",usuario = usuario,chat = chat,amigo = amigo)
 
 @app.route("/registro", methods=["GET","POST"])

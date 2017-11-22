@@ -1,3 +1,1 @@
-ver12
 admin
-juan
